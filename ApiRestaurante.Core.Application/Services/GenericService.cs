@@ -23,7 +23,7 @@ namespace ApiRestaurante.Core.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<postViewModel> AddAsync(postViewModel vm)
+        public virtual async Task<postViewModel> AddAsync(postViewModel vm)
         {
             Entity entity = _mapper.Map<Entity>(vm);
 

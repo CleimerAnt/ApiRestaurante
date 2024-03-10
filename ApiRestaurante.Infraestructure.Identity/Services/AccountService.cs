@@ -36,7 +36,7 @@ namespace ApiRestaurante.Infraestructure.Identity.Services
         {
             AutenticationResponse response = new();
 
-            var user = await _userManager.FindByEmailAsync("waiter@gmail.com");
+            var user = await _userManager.FindByEmailAsync(requuest.Email);
 
             if (user == null)
             {
@@ -61,7 +61,7 @@ namespace ApiRestaurante.Infraestructure.Identity.Services
                 return response;
             }
 
-              JwtSecurityToken jwtSecurityToken = await GenerateJwToken(user);
+            JwtSecurityToken jwtSecurityToken = await GenerateJwToken(user);
 
             response.Id = user.Id;
             response.Email = user.Email;
@@ -71,9 +71,9 @@ namespace ApiRestaurante.Infraestructure.Identity.Services
 
             response.Roles = rolesList.ToList();
             response.IsVerified = user.EmailConfirmed;
-               response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-             var refreshToken = GenerateRefreshToken();
-              response.RefreshToken = refreshToken.Token;
+            response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            var refreshToken = GenerateRefreshToken();
+            response.RefreshToken = refreshToken.Token;
 
 
             return response;
@@ -209,64 +209,6 @@ namespace ApiRestaurante.Infraestructure.Identity.Services
             }
         }
 
-        /*public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin)
-        {
-            ForgotPasswordResponse response = new()
-            {
-                HasError = false
-            };
-
-            var account = await _userManager.FindByEmailAsync(request.Email);
-
-            if (account == null)
-            {
-                response.HasError = true;
-                response.Error = $"No Accounts registered with ${request.Email}";
-                return response;
-            }
-
-            var verificationUri = await SendVeForgotPassWord(account, origin);
-
-            await _emailService.SendAsync(new EmailRequest()
-            {
-                To = account.Email,
-                Body = $"Please reset Your Account Visiting this Url {verificationUri}",
-                Subject = "Reset Password"
-            });
-
-            return response;
-        }
-        public async Task<ReserPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request)
-        {
-            ReserPasswordResponse response = new()
-            {
-                HasError = false
-            };
-
-            var account = await _userManager.FindByEmailAsync(request.Email);
-
-            if (account == null)
-            {
-                response.HasError = true;
-                response.Error = $"No Accounts registered with ${request.Email}";
-                return response;
-            }
-
-            request.Token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
-            var result = await _userManager.ResetPasswordAsync(account, request.Token, request.Password);
-
-            if (!result.Succeeded)
-            {
-                response.HasError = true;
-                response.Error = $"An Error ocurred while reset password";
-                return response;
-            }
-
-
-
-            return response;
-        }*/
-
         
         private async Task<JwtSecurityToken> GenerateJwToken(ApplicationUser user)
         {
@@ -321,36 +263,6 @@ namespace ApiRestaurante.Infraestructure.Identity.Services
 
             return BitConverter.ToString(ramdomBytes).Replace("-", "");
         }
-        private async Task<string> SendVerificationEmailUrl(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-            var route = "Usuarios/ConfirmEmail";
-
-            var Uri = new Uri(string.Concat($"{origin}/", route));
-
-            var verificationUrL = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id);
-            verificationUrL = QueryHelpers.AddQueryString(verificationUrL, "token", code);
-
-            return verificationUrL;
-        }
-
-        private async Task<string> SendVeForgotPassWord(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-            var route = "Usuarios/ResetPassword";
-
-            var Uri = new Uri(string.Concat($"{origin}/", route));
-
-
-            var verificationUrL = QueryHelpers.AddQueryString(Uri.ToString(), "token", code);
-
-            return verificationUrL;
-        }
+        
     }
 }

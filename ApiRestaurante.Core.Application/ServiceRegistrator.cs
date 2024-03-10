@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ApiRestaurante.Core.Application.Interfaces.Services;
+using ApiRestaurante.Core.Application.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -11,9 +13,15 @@ namespace ApiRestaurante.Core.Application
 {
     public static class ServicesRegistrator
     {
-        public static void AddAplicationLayer(this IServiceCollection services, IConfiguration configuration)
-        {
+        public static void AddAplicationLayer(this IServiceCollection services )
+        { 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            services.AddTransient<IIngredientsServices, IngredientsServices>();
+
+            services.AddTransient<IDishesServices, DishesServices>();
+
+            services.AddTransient<IDishesIngredientesServices, DishesIngredientsServices>();
 
         }
     }

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApiRestaurante.Core.Application\ApiRestaurante.Core.Application.csproj" />
+    <ProjectReference Include="..\ApiRestaurante.Core.Domain\ApiRestaurante.Core.Domain.csproj" />
   </ItemGroup>
 
 </Project>

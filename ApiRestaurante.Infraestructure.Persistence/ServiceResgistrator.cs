@@ -23,6 +23,12 @@ namespace ApiRestaurante.Infraestructure.Persistence
             });
 
             services.AddTransient(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
+            services.AddTransient<IIngredientsRepository, IngredientsRepository>();
+
+            services.AddTransient<IDishesRepository, DishesRepository>();
+
+            services.AddTransient<IDishesIngredientsRepository, DishesIngredientsRepository>();
         }
     }
 }

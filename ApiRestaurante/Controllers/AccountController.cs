@@ -1,7 +1,10 @@
 ﻿using ApiRestaurante.Core.Application.Dto.Account;
+using ApiRestaurante.Core.Application.Enums;
 using ApiRestaurante.Core.Application.Interfaces.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Permissions;
 
 namespace ApiRestaurante.Controllers
 {
@@ -22,6 +25,7 @@ namespace ApiRestaurante.Controllers
         }
 
         [HttpPost("registerWaiter")]
+        
         public async Task<IActionResult> RegisterWaiterAsync(RegisterRequest request)
         {
             var origin = Request.Headers["Origin"];
@@ -30,6 +34,9 @@ namespace ApiRestaurante.Controllers
         }
 
         [HttpPost("registerAdmin")]
+        [Authorize (Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> RegisterAdminAsync(RegisterRequest request)
         {
             var origin = Request.Headers["Origin"];
