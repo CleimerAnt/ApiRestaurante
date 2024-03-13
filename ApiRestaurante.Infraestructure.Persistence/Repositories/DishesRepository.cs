@@ -19,6 +19,11 @@ namespace ApiRestaurante.Infraestructure.Persistence.Repositories
             _context = context;
         }
 
-        
+        public async Task<Dishes> ConfirnDishe(string name)
+        {
+            var ingredient = await _context.Set<Dishes>().FirstOrDefaultAsync(d => d.Name == name);
+
+            return ingredient;
+        }
     }
 }

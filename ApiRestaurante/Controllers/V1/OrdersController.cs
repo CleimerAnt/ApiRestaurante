@@ -2,29 +2,30 @@
 using ApiRestaurante.Core.Application.Services;
 using ApiRestaurante.Core.Application.ViewModel.Dishes;
 using ApiRestaurante.Core.Application.ViewModel.DishesIngredients;
+using ApiRestaurante.Core.Application.ViewModel.DishesOrders;
 using ApiRestaurante.Core.Application.ViewModel.Ingredients;
-using ApiRestaurante.Core.Domain.Entities;
-using AutoMapper;
+using ApiRestaurante.Core.Application.ViewModel.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language;
 
 namespace ApiRestaurante.Controllers.V1
 {
     [ApiVersion("1.0")]
     [Authorize(Roles = "Admin")]
-    public class DishesController : BaseApiController
+    public class OrdersController : BaseApiController
     {
+        private readonly IOrdersServices _orderServices;
         private readonly IDishesServices _dishesServices;
-        private readonly IIngredientsServices _ingredientsServices;
-        private readonly IDishesIngredientesServices _dishesIngredientsServices;
-        private readonly IMapper _mapper;
-        public DishesController(IDishesServices dishesServices, IIngredientsServices ingredientsServices, IDishesIngredientesServices dishesIngredientesServices, IMapper mapper)
+        private readonly IDishesOrderServices _dishesordersServices;
+        public OrdersController(IOrdersServices ordersServices, IDishesServices dishesServices, IDishesOrderServices dishesOrderServices)
         {
-            _dishesServices = dishesServices; 
-            _ingredientsServices = ingredientsServices; 
-            _dishesIngredientsServices = dishesIngredientesServices;
-            _mapper = mapper;
+            _orderServices = ordersServices;
+            _dishesServices = dishesServices;
+            _dishesordersServices = dishesOrderServices;
+
         }
+
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -32,7 +33,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Create(DishesSaveViewModel vm)
+        public async Task<IActionResult> Create(OrdersSaveViewModel vm)
         {
             try
             {
@@ -41,36 +42,31 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest();
                 }
 
-                
-                foreach (var ingredient in vm.ingredients)
+
+                foreach (var dishes in vm.DishesAdd)
                 {
 
-                    var IngredientName = await _ingredientsServices.ConfirnIngrediente(ingredient.Name);
+                    var IngredientName = await _dishesServices.ConfirnDishe(dishes.Name);
 
                     if (IngredientName == null)
                     {
-                        ModelState.AddModelError("Confirn Ingredient", $"The {ingredient.Name} ingredient is not added");
+                        ModelState.AddModelError("Confirn Dishe", $"The {dishes.Name} Dishe is not added");
 
                         return BadRequest(ModelState);
                     }
-
                 }
+             var orderAdd =  await _orderServices.AddAsync(vm);
 
-
-                await _dishesServices.AddAsync(vm);
-
-                foreach(var ingredient in vm.ingredients)
+                foreach (var dishes in vm.DishesAdd)
                 {
-                    var ingredienteId = await _ingredientsServices.ConfirnIngrediente(ingredient.Name);
+                    var disheId = await _dishesServices.ConfirnDishe(dishes.Name);
 
-                   var dishe = await _dishesServices.GetByName(vm.Name);
+                    DishesOrderSaveViewModel dishesIngredientsVm = new();
+                    dishesIngredientsVm.DishesID = disheId.Id;
+                    dishesIngredientsVm.OrdersId = orderAdd.Id;
 
-                    DishesIngredientsSaveViewModel dishesIngredientsVm = new();
-                    dishesIngredientsVm.DishesId = dishe.Id;    
-                    dishesIngredientsVm.IngredientId = ingredienteId.Id;
+                    await  _dishesordersServices.AddAsync(dishesIngredientsVm);
 
-                    await _dishesIngredientsServices.AddAsync(dishesIngredientsVm);
-                   
                 }
 
                 return NoContent();
@@ -84,11 +80,11 @@ namespace ApiRestaurante.Controllers.V1
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DishesViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrdersViewModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Update(int Id, DishesSaveViewModel vm)
+        public async Task<IActionResult> Update(int Id, OrdersSaveViewModel vm)
         {
             try
             {
@@ -97,39 +93,40 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest();
                 }
 
-                var ConfirmDishet = await _dishesServices.GetById(Id);
+                var ConfirnOrder = await _orderServices.GetById(Id);
 
-                if(ConfirmDishet == null)
+                if (ConfirnOrder == null)
                 {
-                    ModelState.AddModelError("Confirn User", "User not Found");
+                    ModelState.AddModelError("Confirn Order", "Order not Found");
+
                     return BadRequest(ModelState);
                 }
 
-                foreach (var ingredient in vm.ingredients)
+                foreach (var dishes in vm.DishesAdd)
                 {
 
-                    var IngredientName = await _ingredientsServices.ConfirnIngrediente(ingredient.Name);
+                    var DisheName = await _dishesServices.ConfirnDishe(dishes.Name);
 
-                    if (IngredientName == null)
+                    if (DisheName == null)
                     {
-                        ModelState.AddModelError("Confirn Ingredient", $"The {ingredient.Name} ingredient is not added");
+                        ModelState.AddModelError("Confirn Dishe", $"The {dishes.Name} Dishe is not added");
 
                         return BadRequest(ModelState);
                     }
-
                 }
 
 
-                vm.Id = Id;
-                await _dishesServices.Editar(vm, Id);
+                  vm.Id = Id;
+                  await _orderServices.Editar(vm, Id);
 
-               
-                var dishe = await _dishesServices.GetByName(vm.Name);
-                List<IngredientsViewModel> ingredientList = vm.ingredients.ToList();
 
-               
+                var order = await _orderServices.GetById(Id);
 
-                await _dishesIngredientsServices.Update(dishe.Id, ingredientList);
+                List<DishesViewModel> dishesList =  vm.DishesAdd.ToList();
+
+
+
+                await _dishesordersServices.Update(order.Id, dishesList);
 
                 return Ok(vm);
             }
@@ -140,7 +137,7 @@ namespace ApiRestaurante.Controllers.V1
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IngredientsViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrdersViewModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -149,14 +146,14 @@ namespace ApiRestaurante.Controllers.V1
         {
             try
             {
-                var Ingredients = await _dishesServices.GetAll();
+                var Orders = await _orderServices.GetAllLINQ();
 
-                if (Ingredients == null || Ingredients.Count == 0)
+                if (Orders == null || Orders.Count == 0)
                 {
                     return NoContent();
                 }
 
-                return Ok(Ingredients);
+                return Ok(Orders);
             }
             catch (Exception ex)
             {
@@ -166,7 +163,7 @@ namespace ApiRestaurante.Controllers.V1
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DishesViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrdersViewModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -174,14 +171,14 @@ namespace ApiRestaurante.Controllers.V1
         {
             try
             {
-                var Ingredients = await _dishesServices.GetByIdAsync(Id);
+                var Orders = await _dishesServices.GetByIdAsync(Id);
 
-                if (Ingredients == null)
+                if (Orders == null)
                 {
                     return NoContent();
                 }
 
-                return Ok(Ingredients);
+                return Ok(Orders);
             }
             catch (Exception ex)
             {
@@ -189,6 +186,25 @@ namespace ApiRestaurante.Controllers.V1
             }
         }
 
-       
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            try
+            {
+                await _orderServices.Eliminar(Id);
+
+                var order = await _orderServices.GetById(Id);
+
+                await _dishesordersServices.Remove(Id);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

@@ -14,5 +14,6 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
         Task<List<DishesViewModel>> GetAll();
         Task<DishesViewModel> GetByName(string name);
         Task<List<DishesViewModel>> GetByIdAsync(int Id);
+        Task<DishesViewModel> ConfirnDishe(string name);
     }
 }

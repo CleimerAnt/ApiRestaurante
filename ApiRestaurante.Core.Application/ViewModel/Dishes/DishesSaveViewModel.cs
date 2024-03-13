@@ -1,16 +1,19 @@
-﻿using ApiRestaurante.Core.Application.ViewModel.Ingredients;
+﻿using ApiRestaurante.Core.Application.ViewModel.DishesOrders;
+using ApiRestaurante.Core.Application.ViewModel.Ingredients;
 using AutoMapper.Configuration.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.ViewModel.Dishes
 {
     public class DishesSaveViewModel
     {
+        [JsonIgnore]
         public int Id { get; set; }
         [Required (ErrorMessage = "The Name Field is Required")]
         [DataType (DataType.Text)]
@@ -21,8 +24,9 @@ namespace ApiRestaurante.Core.Application.ViewModel.Dishes
         public int NumberOfPerson { get; set; }
         [Required(ErrorMessage = "The Dish Category Filed is Required")]
         public string DishCategory { get; set; }
-  
         public ICollection<IngredientsViewModel> ingredients { get; set; }
+        [JsonIgnore]
+        public ICollection<DishesOrdersViewModel>? dishesOrdersViewModels { get; set; }
 
     }
 }

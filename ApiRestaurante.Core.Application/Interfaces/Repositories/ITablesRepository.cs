@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.Interfaces.Repositories
 {
-    public interface IDishesRepository : IGenericRepository<Dishes>
+    public interface ITablesRepository : IGenericRepository<Tables>
     {
-        Task<Dishes> ConfirnDishe(string name);
     }
 }

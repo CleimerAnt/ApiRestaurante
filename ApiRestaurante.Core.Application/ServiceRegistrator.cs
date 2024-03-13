@@ -14,7 +14,8 @@ namespace ApiRestaurante.Core.Application
     public static class ServicesRegistrator
     {
         public static void AddAplicationLayer(this IServiceCollection services )
-        { 
+        {
+            #region "Services"
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddTransient<IIngredientsServices, IngredientsServices>();
@@ -23,6 +24,12 @@ namespace ApiRestaurante.Core.Application
 
             services.AddTransient<IDishesIngredientesServices, DishesIngredientsServices>();
 
+            services.AddTransient<ITablesServices, TablesServices>();
+
+            services.AddTransient<IOrdersServices, OrdersServices>();
+
+            services.AddTransient<IDishesOrderServices, DishesOrdersServices>();
+            #endregion
         }
     }
 }

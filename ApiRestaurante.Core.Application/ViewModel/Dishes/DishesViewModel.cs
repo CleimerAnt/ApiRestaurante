@@ -16,6 +16,7 @@ namespace ApiRestaurante.Core.Application.ViewModel.Dishes
         public string Name { get; set; } 
         public double Price { get; set; }
         public int NumberOfPerson { get; set; }
+        [DataType(DataType.Text)]
         public string DishCategory { get; set; }
         public ICollection<IngredientsViewModel> ingredients { get; set; }
     }

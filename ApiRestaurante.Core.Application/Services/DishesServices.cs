@@ -114,6 +114,14 @@ namespace ApiRestaurante.Core.Application.Services
 
             return disheVm;
         }
+        public async Task<DishesViewModel> ConfirnDishe(string name)
+        {
+            var dishe = await _dishesRepository.ConfirnDishe(name);
+
+            DishesViewModel disheVm = _mapper.Map<DishesViewModel>(dishe);
+
+            return disheVm;
+        }
     }
 }
 

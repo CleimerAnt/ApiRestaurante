@@ -1,4 +1,5 @@
 ﻿using ApiRestaurante.Core.Application.Interfaces.Repositories;
+using ApiRestaurante.Core.Application.ViewModel.Orders;
 using ApiRestaurante.Infraestructure.Persistence.Context;
 using ApiRestaurante.Infraestructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace ApiRestaurante.Infraestructure.Persistence
                 m.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName));
             });
 
+            #region "Services"
             services.AddTransient(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
             services.AddTransient<IIngredientsRepository, IngredientsRepository>();
@@ -29,6 +31,13 @@ namespace ApiRestaurante.Infraestructure.Persistence
             services.AddTransient<IDishesRepository, DishesRepository>();
 
             services.AddTransient<IDishesIngredientsRepository, DishesIngredientsRepository>();
+
+            services.AddTransient<ITablesRepository, TablesRepository>();
+
+            services.AddTransient<IOrdersRepository, OrdersRepository>();
+
+            services.AddTransient<IDishesOrdersRepository, DishesOrdersRepository>();
+            #endregion
         }
     }
 }

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.Interfaces.Repositories
 {
-    public interface IDishesRepository : IGenericRepository<Dishes>
+    public interface IDishesOrdersRepository : IGenericRepository<DishesOrders>
     {
-        Task<Dishes> ConfirnDishe(string name);
+        Task Update(int Id, List<Dishes> dishesList);
+        Task Remove(int Id);
     }
 }

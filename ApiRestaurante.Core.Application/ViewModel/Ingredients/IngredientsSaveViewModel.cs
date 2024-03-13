@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.ViewModel.Ingredients
@@ -17,7 +18,8 @@ namespace ApiRestaurante.Core.Application.ViewModel.Ingredients
         [DataType (DataType.Text)]
         [Required (ErrorMessage = "The Name Field is Required")]
         public string Name { get; set; }
-       // public ICollection<DishesViewModel> Dishes { get; set; }
+        [JsonIgnore]
+        public ICollection<DishesViewModel>? Dishes { get; set; }
 
     }
 }

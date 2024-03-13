@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.ViewModel.Ingredients
@@ -14,6 +15,7 @@ namespace ApiRestaurante.Core.Application.ViewModel.Ingredients
         public int Id { get; set; }
         [DataType(DataType.Text)]
         public string Name { get; set; }
-        //public ICollection<DishesViewModel> Dishes { get; set; }
+        [JsonIgnore]
+        public ICollection<DishesViewModel>? Dishes { get; set; }
     }
 }

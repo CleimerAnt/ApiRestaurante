@@ -13,8 +13,7 @@ namespace ApiRestaurante.Core.Domain.Entities
         public double Price { get; set; }
         public int NumberOfPerson {  get; set; }
         public string DishCategory { get; set; }
-
         public ICollection<DishesIngredients> DishesIngredients { get; set; }
-
+        public ICollection<DishesOrders> DishesOrders { get; set; }
     }
 }
