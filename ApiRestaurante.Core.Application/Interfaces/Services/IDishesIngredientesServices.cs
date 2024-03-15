@@ -11,6 +11,6 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
 {
     public interface IDishesIngredientesServices : IGenericService<DishesIngredientsViewModel, DishesIngredientsSaveViewModel, DishesIngredients>
     {
-        Task Update(int id, List<IngredientsViewModel> ingredienteListVm);
+        Task Update(int id, List<IngredientsSaveViewModel> ingredienteListVm);
     }
 }

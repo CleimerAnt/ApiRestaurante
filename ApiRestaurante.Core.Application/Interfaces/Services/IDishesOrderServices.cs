@@ -11,7 +11,7 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
 {
     public interface IDishesOrderServices : IGenericService<DishesOrdersViewModel, DishesOrderSaveViewModel, DishesOrders>
     {
-        Task Update(int id, List<DishesViewModel> dishesListVm);
+        Task Update(int id, List<SaveDishesForOrder> dishesListVm);
         Task Remove(int Id);
     }
 }

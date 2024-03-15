@@ -2,6 +2,7 @@
 using ApiRestaurante.Core.Application.Interfaces.Services;
 using ApiRestaurante.Core.Application.Services;
 using ApiRestaurante.Core.Application.ViewModel.Ingredients;
+using ApiRestaurante.Core.Application.ViewModel.Orders;
 using ApiRestaurante.Core.Application.ViewModel.Tables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -112,14 +113,40 @@ namespace ApiRestaurante.Controllers.V1
         {
             try
             {
-                var Ingredients = await _tablesServices.GetById(Id);
+                var Orders = await _tablesServices.GetById(Id);
 
-                if (Ingredients == null)
+                if (Orders == null)
                 {
                     return NoContent();
                 }
 
-                return Ok(Ingredients);
+                return Ok(Orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("table/{tableOrden}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrdersViewModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "Waiter")]
+        public async Task<IActionResult> GetTableOrden(int tableOrden)
+        {
+            try
+            {
+                var Orders = await _tablesServices.GetTableOrden(tableOrden);
+
+                if (Orders == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(Orders);
             }
             catch (Exception ex)
             {

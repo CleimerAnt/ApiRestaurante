@@ -7,6 +7,7 @@ using ApiRestaurante.Core.Domain.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 
 namespace ApiRestaurante.Controllers.V1
 {
@@ -41,7 +42,14 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest();
                 }
 
-                
+                if (vm.DishCategory != "Entrance" && vm.DishCategory != "Main Course"
+                    && vm.DishCategory != "Dessert" && vm.DishCategory != "Drink")
+                {
+                    ModelState.AddModelError("Category Not Available", $"This Category {vm.DishCategory} is not Available");
+
+                    return BadRequest(ModelState);
+                }
+
                 foreach (var ingredient in vm.ingredients)
                 {
 
@@ -125,9 +133,9 @@ namespace ApiRestaurante.Controllers.V1
 
                
                 var dishe = await _dishesServices.GetByName(vm.Name);
-                List<IngredientsViewModel> ingredientList = vm.ingredients.ToList();
+                List<IngredientsSaveViewModel> ingredientList = vm.ingredients.ToList();
 
-               
+              
 
                 await _dishesIngredientsServices.Update(dishe.Id, ingredientList);
 

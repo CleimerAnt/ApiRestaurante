@@ -26,6 +26,7 @@ namespace ApiRestaurante.Core.Application.Mappings
             #region "Dishes"
             CreateMap<Dishes, DishesViewModel>().ReverseMap();
             CreateMap<Dishes, DishesSaveViewModel>().ReverseMap();
+            CreateMap<Dishes, SaveDishesForOrder>().ReverseMap();
             #endregion
 
             #region "DishesIngredients"

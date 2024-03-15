@@ -1,4 +1,5 @@
-﻿using ApiRestaurante.Core.Application.ViewModel.Tables;
+﻿using ApiRestaurante.Core.Application.ViewModel.Orders;
+using ApiRestaurante.Core.Application.ViewModel.Tables;
 using ApiRestaurante.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
     public interface ITablesServices : IGenericService<TablesViewModel, TablesSaveViewModel, Tables>
     {
         Task<List<TablesViewModel>> GetByOrder(int Id);
+        Task<List<OrdersViewModel>> GetTableOrden(int Id);
     }
 }

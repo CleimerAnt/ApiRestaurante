@@ -23,7 +23,7 @@ namespace ApiRestaurante.Core.Application.ViewModel.Orders
         [DataType(DataType.Text)]
         public string State { get; set; }
         [Required(ErrorMessage = "The State field is Required")]
-        public ICollection<DishesViewModel> DishesAdd { get; set; }
+        public ICollection<SaveDishesForOrder> DishesAdd { get; set; }
         [JsonIgnore]
         public ICollection<DishesViewModel>? Dishes { get; set; }
         [JsonIgnore]

@@ -28,7 +28,7 @@ namespace ApiRestaurante.Core.Application.Services
           await  _dishesordersRepository.Remove(Id);
         }
 
-        public async Task Update(int id, List<DishesViewModel> dishesListVm)
+        public async Task Update(int id, List<SaveDishesForOrder> dishesListVm)
         {
             List<Dishes> ingredients = _mapper.Map<List<Dishes>>(dishesListVm);
 

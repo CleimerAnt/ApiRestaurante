@@ -13,6 +13,7 @@ namespace ApiRestaurante.Core.Application.ViewModel.Ingredients
 {
     public class IngredientsSaveViewModel
     {
+        [JsonIgnore]
         public int Id { get; set; }
 
         [DataType (DataType.Text)]

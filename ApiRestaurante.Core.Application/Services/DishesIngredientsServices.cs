@@ -24,7 +24,7 @@ namespace ApiRestaurante.Core.Application.Services
             _mapper = mapper;
         }
 
-        public async Task Update(int id, List<IngredientsViewModel> ingredienteListVm)
+        public async Task Update(int id, List<IngredientsSaveViewModel> ingredienteListVm)
         {
             List<Ingredients> ingredients = _mapper.Map<List<Ingredients>>(ingredienteListVm);
 

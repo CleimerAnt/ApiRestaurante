@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Razor.Language;
 namespace ApiRestaurante.Controllers.V1
 {
     [ApiVersion("1.0")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Waiter")]
     public class OrdersController : BaseApiController
     {
         private readonly IOrdersServices _orderServices;
@@ -84,6 +84,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        
         public async Task<IActionResult> Update(int Id, OrdersSaveViewModel vm)
         {
             try
@@ -122,7 +123,7 @@ namespace ApiRestaurante.Controllers.V1
 
                 var order = await _orderServices.GetById(Id);
 
-                List<DishesViewModel> dishesList =  vm.DishesAdd.ToList();
+                List<SaveDishesForOrder> dishesList =  vm.DishesAdd.ToList();
 
 
 
@@ -142,6 +143,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        
         public async Task<IActionResult> Get()
         {
             try
@@ -167,6 +169,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+       
         public async Task<IActionResult> GetById(int Id)
         {
             try
@@ -189,6 +192,7 @@ namespace ApiRestaurante.Controllers.V1
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+      
         public async Task<IActionResult> Delete(int Id)
         {
             try
