@@ -13,5 +13,7 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
     {
         Task Update(int id, List<SaveDishesForOrder> dishesListVm);
         Task Remove(int Id);
+
+        Task<List<SaveDishesForOrder>> GetListDishesId(int Id);
     }
 }

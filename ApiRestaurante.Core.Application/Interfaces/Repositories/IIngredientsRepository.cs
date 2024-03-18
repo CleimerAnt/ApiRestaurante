@@ -9,6 +9,6 @@ namespace ApiRestaurante.Core.Application.Interfaces.Repositories
 {
     public interface IIngredientsRepository : IGenericRepository<Ingredients>
     {
-        Task<Ingredients> ConfirnIngrediente(string name);
+        Task<Ingredients> ConfirnIngrediente(int Id);
     }
 }

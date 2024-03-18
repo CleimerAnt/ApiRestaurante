@@ -10,6 +10,7 @@ namespace ApiRestaurante.Core.Application.Interfaces.Services
 {
     public interface IIngredientsServices : IGenericService<IngredientsViewModel, IngredientsSaveViewModel, Ingredients>
     {
-        Task<IngredientsViewModel> ConfirnIngrediente(string name);
+        Task<IngredientsViewModel> ConfirnIngrediente(int Id);
+        Task<List<IngredientsSaveViewModel>> GetListIngredientsById(int Id);
     }
 }

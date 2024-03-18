@@ -20,13 +20,29 @@ namespace ApiRestaurante.Core.Application.Services
             _ingredientsRepository = ingredientsRepository;        
             _mapper = mapper;
         }
-        public async Task<IngredientsViewModel> ConfirnIngrediente(string name)
+        public async Task<IngredientsViewModel> ConfirnIngrediente(int Id)
         {
-            var ingrediente = await _ingredientsRepository.ConfirnIngrediente(name);
+            var ingrediente = await _ingredientsRepository.ConfirnIngrediente(Id);
 
             IngredientsViewModel ingredienteVm = _mapper.Map<IngredientsViewModel>(ingrediente);
 
             return ingredienteVm;
         }
+
+        public async Task<List<IngredientsSaveViewModel>> GetListIngredientsById(int Id)
+        {
+            var ingredientsList = await _ingredientsRepository.GetAll();
+
+            var ingredients = from i in ingredientsList
+                              where i.Id == Id
+                              select new IngredientsSaveViewModel
+                              {
+                                  Id = i.Id,
+                                  Name = i.Name,
+                              };
+
+            return ingredients.ToList(); 
+        }
+
     }
 }

@@ -19,9 +19,9 @@ namespace ApiRestaurante.Infraestructure.Persistence.Repositories
             _Context = context; 
         }
 
-        public async Task<Ingredients> ConfirnIngrediente(string name)
+        public async Task<Ingredients> ConfirnIngrediente(int Id)
         {
-            var ingredient = await _Context.Set<Ingredients>().FirstOrDefaultAsync(i => i.Name == name);
+            var ingredient = await _Context.Set<Ingredients>().FirstOrDefaultAsync(i => i.Id == Id);
 
             return ingredient;
         }

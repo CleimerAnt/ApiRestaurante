@@ -32,7 +32,7 @@ namespace ApiRestaurante.Core.Application.Services
         {
             List<DishesIngredientsViewModel> ingredientsAndDishes = vm.ingredients.Select(ingredientesId => new DishesIngredientsViewModel 
             { 
-                IngredientId = ingredientesId.Id,
+                IngredientId = ingredientesId
                 
               
             }).ToList();
@@ -114,14 +114,16 @@ namespace ApiRestaurante.Core.Application.Services
 
             return disheVm;
         }
-        public async Task<DishesViewModel> ConfirnDishe(string name)
+        public async Task<DishesViewModel> ConfirnDishe(int Id)
         {
-            var dishe = await _dishesRepository.ConfirnDishe(name);
+            var dishe = await _dishesRepository.ConfirnDishe(Id);
 
             DishesViewModel disheVm = _mapper.Map<DishesViewModel>(dishe);
 
             return disheVm;
         }
+
+      
     }
 }
 

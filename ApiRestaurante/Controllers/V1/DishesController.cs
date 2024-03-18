@@ -31,6 +31,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Create(DishesSaveViewModel vm)
@@ -50,38 +51,22 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest(ModelState);
                 }
 
-                foreach (var ingredient in vm.ingredients)
-                {
-
-                    var IngredientName = await _ingredientsServices.ConfirnIngrediente(ingredient.Name);
-
-                    if (IngredientName == null)
-                    {
-                        ModelState.AddModelError("Confirn Ingredient", $"The {ingredient.Name} ingredient is not added");
-
-                        return BadRequest(ModelState);
-                    }
-
-                }
-
 
                 await _dishesServices.AddAsync(vm);
 
                 foreach(var ingredient in vm.ingredients)
                 {
-                    var ingredienteId = await _ingredientsServices.ConfirnIngrediente(ingredient.Name);
 
                    var dishe = await _dishesServices.GetByName(vm.Name);
 
                     DishesIngredientsSaveViewModel dishesIngredientsVm = new();
                     dishesIngredientsVm.DishesId = dishe.Id;    
-                    dishesIngredientsVm.IngredientId = ingredienteId.Id;
+                    dishesIngredientsVm.IngredientId = ingredient;
 
                     await _dishesIngredientsServices.AddAsync(dishesIngredientsVm);
                    
                 }
-
-                return NoContent();
+                return CreatedAtAction(nameof(Create), new { id = vm.Id, vm }); 
             }
             catch
             (Exception ex)
@@ -107,35 +92,26 @@ namespace ApiRestaurante.Controllers.V1
 
                 var ConfirmDishet = await _dishesServices.GetById(Id);
 
-                if(ConfirmDishet == null)
+                if (ConfirmDishet == null)
                 {
                     ModelState.AddModelError("Confirn User", "User not Found");
                     return BadRequest(ModelState);
                 }
 
-                foreach (var ingredient in vm.ingredients)
-                {
-
-                    var IngredientName = await _ingredientsServices.ConfirnIngrediente(ingredient.Name);
-
-                    if (IngredientName == null)
-                    {
-                        ModelState.AddModelError("Confirn Ingredient", $"The {ingredient.Name} ingredient is not added");
-
-                        return BadRequest(ModelState);
-                    }
-
-                }
-
-
                 vm.Id = Id;
                 await _dishesServices.Editar(vm, Id);
 
-               
-                var dishe = await _dishesServices.GetByName(vm.Name);
-                List<IngredientsSaveViewModel> ingredientList = vm.ingredients.ToList();
+                var ingredients = new List<IngredientsSaveViewModel>(); 
 
-              
+                foreach (var iten in vm.ingredients)
+                {
+                     ingredients = await _ingredientsServices.GetListIngredientsById(iten);
+
+                }
+               
+                
+                var dishe = await _dishesServices.GetByName(vm.Name);
+                List<IngredientsSaveViewModel> ingredientList = ingredients;
 
                 await _dishesIngredientsServices.Update(dishe.Id, ingredientList);
 

@@ -24,7 +24,7 @@ namespace ApiRestaurante.Core.Application.ViewModel.Dishes
         public int NumberOfPerson { get; set; }
         [Required(ErrorMessage = "The Dish Category Filed is Required")]
         public string DishCategory { get; set; }
-        public ICollection<IngredientsSaveViewModel> ingredients { get; set; }
+        public ICollection<int> ingredients { get; set; }
         [JsonIgnore]
         public ICollection<DishesOrdersViewModel>? dishesOrdersViewModels { get; set; }
 

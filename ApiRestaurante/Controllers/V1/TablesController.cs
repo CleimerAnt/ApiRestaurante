@@ -25,6 +25,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Authorize (Roles = "Admin")]
         public async Task<IActionResult> Create(TablesSaveViewModel vm)
         {
@@ -39,7 +40,7 @@ namespace ApiRestaurante.Controllers.V1
 
                 await _tablesServices.AddAsync(vm);
 
-                return NoContent();
+                return CreatedAtAction(nameof(Create), new { id = vm.Id, vm });
             }
             catch
             (Exception ex)

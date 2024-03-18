@@ -19,6 +19,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Create(IngredientsSaveViewModel vm)
@@ -30,9 +31,9 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest();  
                 }
 
-                await _ingredientsServices.AddAsync(vm);    
-                
-                return NoContent(); 
+                await _ingredientsServices.AddAsync(vm);
+
+                return CreatedAtAction(nameof(Create), new { id = vm.Id, vm });
             }
             catch
             (Exception ex)

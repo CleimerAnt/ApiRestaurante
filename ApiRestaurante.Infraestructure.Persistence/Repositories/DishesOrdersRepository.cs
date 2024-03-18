@@ -42,7 +42,7 @@ namespace ApiRestaurante.Infraestructure.Persistence.Repositories
                 foreach (var dishes in dishesList)
                 {
 
-                    var dishesId = await _context.Dishes.FirstOrDefaultAsync(i => i.Name == dishes.Name);
+                    var dishesId = await _context.Dishes.FirstOrDefaultAsync(i => i.Id == dishes.Id);
 
                     var DishesOrders = new DishesOrders
                     {

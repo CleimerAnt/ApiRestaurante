@@ -9,6 +9,6 @@ namespace ApiRestaurante.Core.Application.Interfaces.Repositories
 {
     public interface IDishesRepository : IGenericRepository<Dishes>
     {
-        Task<Dishes> ConfirnDishe(string name);
+        Task<Dishes> ConfirnDishe(int Id);
     }
 }

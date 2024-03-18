@@ -33,6 +33,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(OrdersSaveViewModel vm)
         {
             try
@@ -42,24 +43,11 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest();
                 }
 
-
-                foreach (var dishes in vm.DishesAdd)
-                {
-
-                    var IngredientName = await _dishesServices.ConfirnDishe(dishes.Name);
-
-                    if (IngredientName == null)
-                    {
-                        ModelState.AddModelError("Confirn Dishe", $"The {dishes.Name} Dishe is not added");
-
-                        return BadRequest(ModelState);
-                    }
-                }
              var orderAdd =  await _orderServices.AddAsync(vm);
 
                 foreach (var dishes in vm.DishesAdd)
                 {
-                    var disheId = await _dishesServices.ConfirnDishe(dishes.Name);
+                    var disheId = await _dishesServices.ConfirnDishe(dishes);
 
                     DishesOrderSaveViewModel dishesIngredientsVm = new();
                     dishesIngredientsVm.DishesID = disheId.Id;
@@ -69,7 +57,7 @@ namespace ApiRestaurante.Controllers.V1
 
                 }
 
-                return NoContent();
+                return CreatedAtAction(nameof(Create), new { id = vm.Id, vm });
             }
             catch
             (Exception ex)
@@ -103,27 +91,21 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest(ModelState);
                 }
 
-                foreach (var dishes in vm.DishesAdd)
-                {
-
-                    var DisheName = await _dishesServices.ConfirnDishe(dishes.Name);
-
-                    if (DisheName == null)
-                    {
-                        ModelState.AddModelError("Confirn Dishe", $"The {dishes.Name} Dishe is not added");
-
-                        return BadRequest(ModelState);
-                    }
-                }
-
-
+             
                   vm.Id = Id;
                   await _orderServices.Editar(vm, Id);
 
 
                 var order = await _orderServices.GetById(Id);
 
-                List<SaveDishesForOrder> dishesList =  vm.DishesAdd.ToList();
+                var dishes = new List<SaveDishesForOrder>();
+
+                foreach (var dis in vm.DishesAdd) 
+                {
+                    dishes = await _dishesordersServices.GetListDishesId(dis);
+                }
+
+                List<SaveDishesForOrder> dishesList = dishes.ToList();
 
 
 

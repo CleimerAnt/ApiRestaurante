@@ -10,12 +10,8 @@ namespace ApiRestaurante.Core.Application.ViewModel.Dishes
 {
     public class SaveDishesForOrder
     {
-        [JsonIgnore]
         public int Id { get; set; }
-        [Required(ErrorMessage = "The Name Field is Required")]
-        [DataType(DataType.Text)]
-        public string Name { get; set; }
        
-
+        public string Name { get; set; }    
     }
 }
