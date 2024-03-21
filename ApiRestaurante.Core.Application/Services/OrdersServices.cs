@@ -1,6 +1,7 @@
 ﻿using ApiRestaurante.Core.Application.Interfaces.Repositories;
 using ApiRestaurante.Core.Application.Interfaces.Services;
 using ApiRestaurante.Core.Application.ViewModel.Dishes;
+using ApiRestaurante.Core.Application.ViewModel.Ingredients;
 using ApiRestaurante.Core.Application.ViewModel.Orders;
 using ApiRestaurante.Core.Domain.Entities;
 using AutoMapper;
@@ -16,15 +17,19 @@ namespace ApiRestaurante.Core.Application.Services
     public class OrdersServices : GenericServices<OrdersViewModel, OrdersSaveViewModel, Orders>, IOrdersServices
     {
         private readonly IOrdersRepository _OrderRepository;
+        private readonly IDishesIngredientsRepository _dishesIngredientsRepository;
         private readonly IDishesOrdersRepository _DishesOrdersRepository;
         private readonly IDishesRepository _dishesRepository;
         private readonly IMapper _mapper;
-        public OrdersServices(IOrdersRepository ordersRepository, IMapper mapper,IDishesRepository dishesRepository ,IDishesOrdersRepository dishesOrdersRepository): base(ordersRepository, mapper) 
+        private readonly IIngredientsRepository _ingredientsRepository;  
+        public OrdersServices(IOrdersRepository ordersRepository, IMapper mapper,IDishesRepository dishesRepository ,IDishesOrdersRepository dishesOrdersRepository, IDishesIngredientsRepository dishesIngredientsRepository, IIngredientsRepository ingredientsRepository): base(ordersRepository, mapper) 
         {
             _OrderRepository = ordersRepository;
             _mapper = mapper;
             _DishesOrdersRepository = dishesOrdersRepository;
             _dishesRepository = dishesRepository;
+            _dishesIngredientsRepository = dishesIngredientsRepository;
+            _ingredientsRepository = ingredientsRepository; 
         }
 
        public async Task<List<OrdersViewModel>> GetAllLINQ()
@@ -32,6 +37,8 @@ namespace ApiRestaurante.Core.Application.Services
             var dishesList = await _dishesRepository.GetAll();
             var ordersList = await _OrderRepository.GetAll();
             var dihesOrderList = await _DishesOrdersRepository.GetAll();
+            var dishesIngredientsList = await _dishesIngredientsRepository.GetAll();
+            var ingredients = await _ingredientsRepository.GetAll();
 
             var orders = from o in ordersList
                          select new OrdersViewModel
@@ -46,6 +53,18 @@ namespace ApiRestaurante.Core.Application.Services
                                        select new DishesViewModel
                                        {
                                            Name = d.Name,
+                                           Price = d.Price,
+                                           NumberOfPerson = d.NumberOfPerson,
+                                           DishCategory = d.DishCategory,
+                                           ingredients = (from di in dishesIngredientsList
+                                                          join d2 in dishesList on di.DishesId equals d2.Id
+                                                          join i in ingredients on di.IngredientId equals i.Id
+                                                          where d.Id == di.DishesId
+                                                          select new IngredientsViewModel
+                                                          {
+                                                              Id = i.Id,
+                                                              Name = i.Name
+                                                          }).ToList()
                                        }).ToList()
                          };
 

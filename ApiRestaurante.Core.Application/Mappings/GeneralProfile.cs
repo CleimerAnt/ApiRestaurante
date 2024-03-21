@@ -37,11 +37,17 @@ namespace ApiRestaurante.Core.Application.Mappings
             #region"Tables"
             CreateMap<Tables, TablesViewModel>().ReverseMap();
             CreateMap<Tables, TablesSaveViewModel>().ReverseMap();
+            CreateMap<TablesViewModel, TablesSaveViewModel>().ReverseMap();
+            CreateMap<ChangeStatusTableViewModel, TablesSaveViewModel>().ReverseMap();
             #endregion
 
             #region "Orders"
             CreateMap<Orders, OrdersViewModel>().ReverseMap();
             CreateMap<Orders, OrdersSaveViewModel>()
+                .ForMember(opt => opt.DishesAdd, i => i.Ignore())
+                .ReverseMap();
+
+            CreateMap<EditOrderViewModel, OrdersSaveViewModel>()
                 .ForMember(opt => opt.DishesAdd, i => i.Ignore())
                 .ReverseMap();
             #endregion

@@ -4,6 +4,7 @@ using ApiRestaurante.Core.Application.Services;
 using ApiRestaurante.Core.Application.ViewModel.Ingredients;
 using ApiRestaurante.Core.Application.ViewModel.Orders;
 using ApiRestaurante.Core.Application.ViewModel.Tables;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +15,11 @@ namespace ApiRestaurante.Controllers.V1
     public class TablesController : BaseApiController
     {
         private readonly ITablesServices _tablesServices;
-        public TablesController(ITablesServices tablesServices)
+        private readonly IMapper _mapper;
+        public TablesController(ITablesServices tablesServices, IMapper mapper)
         {
             _tablesServices = tablesServices;
+            _mapper = mapper;   
         }
 
         [HttpPost]
@@ -70,7 +73,7 @@ namespace ApiRestaurante.Controllers.V1
 
                 await _tablesServices.Editar(vm, Id);
 
-                return Ok();
+                return Ok(vm);
             }
             catch (Exception ex)
             {
@@ -115,8 +118,35 @@ namespace ApiRestaurante.Controllers.V1
             try
             {
                 var Orders = await _tablesServices.GetById(Id);
+                TablesViewModel TableVm = _mapper.Map<TablesViewModel>(Orders);
 
                 if (Orders == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(TableVm);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("table/{tableOrdenId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrdersViewModel))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "Waiter")]
+        public async Task<IActionResult> GetTableOrden(int tableOrdenId)
+        {
+            try
+            {
+                var Orders = await _tablesServices.GetTableOrden(tableOrdenId);
+
+                if (Orders.Count == 0)
                 {
                     return NoContent();
                 }
@@ -129,25 +159,39 @@ namespace ApiRestaurante.Controllers.V1
             }
         }
 
-        [HttpGet("table/{tableOrden}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrdersViewModel))]
+        [HttpPut("table/{changestatusId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ChangeStatusTableViewModel))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Roles = "Waiter")]
-        public async Task<IActionResult> GetTableOrden(int tableOrden)
+        public async Task<IActionResult> ChangeStatus(int changestatusId, ChangeStatusTableViewModel vm)
         {
             try
             {
-                var Orders = await _tablesServices.GetTableOrden(tableOrden);
-
-                if (Orders == null)
+                if (!ModelState.IsValid)
                 {
-                    return NoContent();
+                    return BadRequest();
                 }
 
-                return Ok(Orders);
+                if (vm.State.ToUpper() != "available".ToUpper() && vm.State.ToUpper() != "in the process of care".ToUpper()
+                   && vm.State.ToUpper() != "attended".ToUpper())
+                {
+                    ModelState.AddModelError("Status not found", $"this status {vm.State} is not available");
+
+                    return BadRequest(ModelState);
+                }
+
+                vm.Id = changestatusId;
+                var table = await _tablesServices.GetById(changestatusId);
+                table.State = vm.State;
+
+                TablesSaveViewModel SaveVm = _mapper.Map<TablesSaveViewModel>(table);
+            
+                await _tablesServices.Editar(SaveVm, changestatusId);
+
+                return Ok();
             }
             catch (Exception ex)
             {

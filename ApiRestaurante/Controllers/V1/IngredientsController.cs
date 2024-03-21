@@ -2,6 +2,7 @@
 using ApiRestaurante.Core.Application.ViewModel.Ingredients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Validations;
 
 namespace ApiRestaurante.Controllers.V1
 {
@@ -57,9 +58,9 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest();
                 }
                 vm.Id = Id;
-                await _ingredientsServices.Editar(vm, Id);
+                 await _ingredientsServices.Editar(vm, Id);
 
-                return Ok();    
+                return Ok(vm);    
             }
             catch (Exception ex)
             {

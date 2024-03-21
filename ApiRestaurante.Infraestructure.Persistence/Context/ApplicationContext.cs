@@ -15,15 +15,15 @@ namespace ApiRestaurante.Infraestructure.Persistence.Context
     {
         public ApplicationContext(DbContextOptions options) : base(options)
         {
-            
+
         }
 
         public DbSet<Ingredients> Ingredients { get; set; }
-        public DbSet<Dishes> Dishes { get; set; }   
+        public DbSet<Dishes> Dishes { get; set; }
         public DbSet<DishesIngredients> DishesIngredients { get; set; }
         public DbSet<DishesOrders> DishesOrders { get; set; }
         public DbSet<Tables> Tables { get; set; }
-      
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity>())

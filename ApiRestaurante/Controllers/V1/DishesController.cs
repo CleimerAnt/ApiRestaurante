@@ -43,8 +43,8 @@ namespace ApiRestaurante.Controllers.V1
                     return BadRequest();
                 }
 
-                if (vm.DishCategory != "Entrance" && vm.DishCategory != "Main Course"
-                    && vm.DishCategory != "Dessert" && vm.DishCategory != "Drink")
+                if (vm.DishCategory.ToUpper() != "Entrance".ToUpper() && vm.DishCategory.ToUpper() != "Main Course".ToUpper()
+                    && vm.DishCategory.ToUpper() != "Dessert".ToUpper() && vm.DishCategory.ToUpper() != "Drink".ToUpper())
                 {
                     ModelState.AddModelError("Category Not Available", $"This Category {vm.DishCategory} is not Available");
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiRestaurante.Infraestructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class identityInit : Migration
+    public partial class PersistenceInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -5,6 +5,7 @@ using ApiRestaurante.Core.Application.ViewModel.DishesIngredients;
 using ApiRestaurante.Core.Application.ViewModel.DishesOrders;
 using ApiRestaurante.Core.Application.ViewModel.Ingredients;
 using ApiRestaurante.Core.Application.ViewModel.Orders;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language;
@@ -18,12 +19,13 @@ namespace ApiRestaurante.Controllers.V1
         private readonly IOrdersServices _orderServices;
         private readonly IDishesServices _dishesServices;
         private readonly IDishesOrderServices _dishesordersServices;
-        public OrdersController(IOrdersServices ordersServices, IDishesServices dishesServices, IDishesOrderServices dishesOrderServices)
+        private readonly IMapper _mapper;
+        public OrdersController(IOrdersServices ordersServices, IDishesServices dishesServices, IDishesOrderServices dishesOrderServices, IMapper mapper)
         {
             _orderServices = ordersServices;
             _dishesServices = dishesServices;
             _dishesordersServices = dishesOrderServices;
-
+            _mapper = mapper;   
         }
 
 
@@ -42,7 +44,7 @@ namespace ApiRestaurante.Controllers.V1
                 {
                     return BadRequest();
                 }
-
+             vm.State = "In Progress";
              var orderAdd =  await _orderServices.AddAsync(vm);
 
                 foreach (var dishes in vm.DishesAdd)
@@ -73,7 +75,7 @@ namespace ApiRestaurante.Controllers.V1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         
-        public async Task<IActionResult> Update(int Id, OrdersSaveViewModel vm)
+        public async Task<IActionResult> Update(int Id, EditOrderViewModel vm)
         {
             try
             {
@@ -93,7 +95,11 @@ namespace ApiRestaurante.Controllers.V1
 
              
                   vm.Id = Id;
-                  await _orderServices.Editar(vm, Id);
+                var datosOrder = await _orderServices.GetById(Id);
+                datosOrder.DishesAdd = vm.DishesAdd;
+                 OrdersSaveViewModel OrderSave = _mapper.Map<OrdersSaveViewModel>(datosOrder);
+
+                  await _orderServices.Editar(OrderSave, Id);
 
 
                 var order = await _orderServices.GetById(Id);

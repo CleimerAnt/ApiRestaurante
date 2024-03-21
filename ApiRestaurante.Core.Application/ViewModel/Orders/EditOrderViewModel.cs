@@ -1,6 +1,5 @@
 ﻿using ApiRestaurante.Core.Application.ViewModel.Dishes;
 using ApiRestaurante.Core.Application.ViewModel.DishesOrders;
-using ApiRestaurante.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,13 +10,15 @@ using System.Threading.Tasks;
 
 namespace ApiRestaurante.Core.Application.ViewModel.Orders
 {
-    public class OrdersSaveViewModel
+    public class EditOrderViewModel
     {
         [JsonIgnore]
         public int Id { get; set; }
-        [Required (ErrorMessage = "The Table Field is Required")]
+        [Required(ErrorMessage = "The Table Field is Required")]
+        [JsonIgnore]
         public int TableId { get; set; }
-        [Required (ErrorMessage = "The Sub Total field is Required")]
+        [Required(ErrorMessage = "The Sub Total field is Required")]
+        [JsonIgnore]
         public double SubTotal { get; set; }
         [JsonIgnore]
         public string? State { get; set; }

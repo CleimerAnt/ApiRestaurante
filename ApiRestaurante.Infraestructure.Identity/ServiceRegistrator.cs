@@ -35,17 +35,6 @@ namespace ApiRestaurante.Infraestructure.Identity
              services.AddIdentity<ApplicationUser, IdentityRole>()
              .AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
 
-           /*  services.ConfigureApplicationCookie(options =>
-             {
-                 options.LogoutPath = "/Usuarios";
-             });
-
-             services.ConfigureApplicationCookie(options =>
-             {
-                 options.LoginPath = "/Usuarios";
-                 options.AccessDeniedPath = "/Usuarios/AccessDenied";
-             });*/
-
             services.Configure<JwtSettings>(configuration.GetSection("JWTSettings"));
 
             services.AddAuthentication(options =>

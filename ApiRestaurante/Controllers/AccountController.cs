@@ -25,7 +25,8 @@ namespace ApiRestaurante.Controllers
         }
 
         [HttpPost("registerWaiter")]
-        
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<IActionResult> RegisterWaiterAsync(RegisterRequest request)
         {
             var origin = Request.Headers["Origin"];
@@ -37,6 +38,7 @@ namespace ApiRestaurante.Controllers
         [Authorize (Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RegisterAdminAsync(RegisterRequest request)
         {
             var origin = Request.Headers["Origin"];

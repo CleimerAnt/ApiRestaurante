@@ -21,7 +21,7 @@ namespace ApiRestaurante.Infraestructure.Identity.Seeds
 
             defaultUser.PhoneNumber = "809-000-0000";
 
-            defaultUser.Email = "admin@gmail.com.com";
+            defaultUser.Email = "admin@gmail.com";
 
             defaultUser.EmailConfirmed = true;
 

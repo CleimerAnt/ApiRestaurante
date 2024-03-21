@@ -176,7 +176,7 @@ namespace ApiRestaurante.Infraestructure.Identity.Services
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, Roles.Admin.ToString());
+                await _userManager.AddToRoleAsync(user, Roles.Waiter.ToString());
             }
             else
             {
